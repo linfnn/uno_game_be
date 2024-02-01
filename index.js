@@ -11,6 +11,7 @@ const io = require('socket.io')(server, {
         methods: ["GET", "POST"]
     }
 });
+// https://uno-game-jlpw.onrender.com
 const cors = require('cors');
 const { divideCards, pickSuitCards } = require('./services/cards');
 // const { getTurn } = require('./services/turns');
