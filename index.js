@@ -14,7 +14,7 @@ const io = require('socket.io')(server, {
 const cors = require('cors');
 const { divideCards, pickSuitCards } = require('./services/cards');
 // const { getTurn } = require('./services/turns');
-const { playCard, drawCard } = require('./services/rules');
+const { playCard, drawCard, playResult } = require('./services/rules');
 const { playAgain } = require('./services/playAgain');
 const corsOptions = {
     origin: "https://uno-game-jlpw.onrender.com",
@@ -152,6 +152,25 @@ io.on('connection', (socket) => {
             suitCards: drew.suitCards,
             pileCard: drew.pileCard,
             draw: drew.draw?.length,
+            residualCards: cards[data.roomCode].residualCards,
+            wildColor: cards[data.roomCode].variable.color,
+            prevUser: {
+                username: rooms[data.roomCode].users[data.index],
+                cards: cards[data.roomCode].userCards[rooms[data.roomCode].users[data.index]]
+            }
+        })
+    })
+    socket.on('pass', (data) => {
+        io.to(data.roomCode).emit('passed', 'user successfully passed')
+        const passed = playResult(rooms[data.roomCode].users, data.index, cards[data.roomCode], data.pileCard)
+        io.to(data.roomCode).emit('nextTurn', {
+            nextUser: {
+                username: passed.nextUser,
+                index: rooms[data.roomCode].users.indexOf(passed.nextUser)
+            },
+            suitCards: passed.suitCards,
+            pileCard: passed.pileCard,
+            draw: passed.draw?.length,
             residualCards: cards[data.roomCode].residualCards,
             wildColor: cards[data.roomCode].variable.color,
             prevUser: {

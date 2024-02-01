@@ -44,8 +44,8 @@ const divideCards = (data) => {
         userCards[data.users[i]] = []
     }
     const unoCards = makeUnoCards()
-    const divideCards = unoCards.slice(0, data.count * 2)
-    var i = data.count * 2
+    const divideCards = unoCards.slice(0, data.count * 7)
+    var i = data.count * 7
     while (i < unoCards.length && (unoCards[i] === 'wild' || unoCards[i] === 'drawFour' || unoCards[i].includes('draw') || unoCards[i].includes('reverse') || unoCards[i].includes('skip'))) {
         i++
     }

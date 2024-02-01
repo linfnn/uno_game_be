@@ -98,6 +98,7 @@ const drawCard = (users, roomCards, pileCard, index, auto) => {
         return drawResult(roomCards, pileCard, nextUser, drawCards)
     }
 }
+
 const drawResult = (roomCards, pileCard, nextUser, drawCards) => {
     return {
         roomCards,
@@ -120,5 +121,6 @@ const playResult = (users, index, roomCards, pileCard) => {
 
 module.exports = {
     playCard,
-    drawCard
+    drawCard,
+    playResult
 }
