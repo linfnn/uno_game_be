@@ -106,54 +106,54 @@ const pickSuitCards = (userCards, pileCard, color) => {
     })
 }
 
-const testSuitCards = (req, res, color) => {
-    const data = {
-        roomCode: '1',
-        count: 2,
-        users: ['nga', 'hong']
-    }
-    const cards = divideCards(data)
-    const ingredients = cards.pileCard.includes('_') ? cards.pileCard.split('_') : cards.pileCard
-    const suitCards = cards.userCards['nga'].filter(card => {
-        if (typeof ingredients == 'string') {
-            if (ingredients === 'wild') {
-                return card.includes(ingredients) || card.includes(color)
-            } else {
-                if (color) {
-                    return card.includes(ingredients) || card.includes(color)
-                } else {
-                    return card.includes(ingredients)
-                }
-            }
-        } else {
-            const splitCard = card.includes('_') ? card.split('_') : card
-            if (typeof splitCard === 'string') {
-                return splitCard
-            } else {
-                if (ingredients[1] === 'draw') {
-                    return splitCard.includes(ingredients[1])
-                } else {
-                    return splitCard[0] === ingredients[0] || splitCard[1] === ingredients[1]
-                }
-            }
-            // return card.includes(ingredients[0]) || card.includes(ingredients[1]) || card === 'wild' || card === 'drawFour'
-        }
-    })
-    return res.status(200).json({
-        // divideCards,
-        // userCards,
-        userCards: cards.userCards,
-        pileCard: cards.pileCard,
-        turn: {
-            user: 'nga',
-            suitCards
-        }
-    })
-}
+// const testSuitCards = (req, res, color) => {
+//     const data = {
+//         roomCode: '1',
+//         count: 2,
+//         users: ['nga', 'hong']
+//     }
+//     const cards = divideCards(data)
+//     const ingredients = cards.pileCard.includes('_') ? cards.pileCard.split('_') : cards.pileCard
+//     const suitCards = cards.userCards['nga'].filter(card => {
+//         if (typeof ingredients == 'string') {
+//             if (ingredients === 'wild') {
+//                 return card.includes(ingredients) || card.includes(color)
+//             } else {
+//                 if (color) {
+//                     return card.includes(ingredients) || card.includes(color)
+//                 } else {
+//                     return card.includes(ingredients)
+//                 }
+//             }
+//         } else {
+//             const splitCard = card.includes('_') ? card.split('_') : card
+//             if (typeof splitCard === 'string') {
+//                 return splitCard
+//             } else {
+//                 if (ingredients[1] === 'draw') {
+//                     return splitCard.includes(ingredients[1])
+//                 } else {
+//                     return splitCard[0] === ingredients[0] || splitCard[1] === ingredients[1]
+//                 }
+//             }
+//             // return card.includes(ingredients[0]) || card.includes(ingredients[1]) || card === 'wild' || card === 'drawFour'
+//         }
+//     })
+//     return res.status(200).json({
+//         // divideCards,
+//         // userCards,
+//         userCards: cards.userCards,
+//         pileCard: cards.pileCard,
+//         turn: {
+//             user: 'nga',
+//             suitCards
+//         }
+//     })
+// }
 
 module.exports = {
     makeUnoCards,
     divideCards,
     pickSuitCards,
-    testSuitCards
+    // testSuitCards
 }

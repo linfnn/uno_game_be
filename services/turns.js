@@ -39,13 +39,7 @@ const getTurn = (users, index, jump) => {
             break
     }
     return users[newIndex]
-    // res.status(200).json({
-    //     users,
-    //     jump,
-    //     index,
-    //     newIndex,
-    //     user: users[newIndex]
-    // })
+
 }
 
 module.exports = {

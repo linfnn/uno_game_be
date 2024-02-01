@@ -12,10 +12,10 @@ const io = require('socket.io')(server, {
     }
 });
 const cors = require('cors');
-const { divideCards, makeUnoCards, pickSuitCards, testSuitCards } = require('./services/cards');
-const { getTurn } = require('./services/turns');
+const { divideCards, pickSuitCards } = require('./services/cards');
+// const { getTurn } = require('./services/turns');
 const { playCard, drawCard } = require('./services/rules');
-const { playAgain, testPlayAgain } = require('./services/playAgain');
+const { playAgain } = require('./services/playAgain');
 const corsOptions = {
     origin: "http://localhost:3000",
     methods: ["GET", "POST"]
@@ -189,38 +189,38 @@ io.on('connection', (socket) => {
     })
 })
 
-app.use('/uno', (req, res) => divideCards(req, res, {
-    count: 3,
-    roomCode: '',
-    users: ['nga', 'hong', 'danh']
-}))
-app.use('/suitCards', (req, res) => testSuitCards(req, res))
-app.use('/turn', (req, res) => getTurn(req, res, ['nga', 'hong', 'nobi', 'danh'], 2, '-1'))
-app.use('/playAgain/:username', (req, res) => {
-    const username = req.params.username
-    const testRoom = {
-        roomCode: 12,
-        host: 'nga',
-        users: ['nga', 'hong', 'nobi'],
-        again: ['nga', 'hong', 'nobi']
-    }
-    testRoom.again.push(username)
-    if (testRoom.again.length > testRoom.users.length) {
-        playAgainObj[testRoom.roomCode] = {}
-        // Đếm số lần xuất hiện của mỗi phần tử
-        testRoom.again.forEach(function (element) {
-            playAgainObj[testRoom.roomCode][element] = (playAgainObj[testRoom.roomCode][element] || 0) + 1;
-        });
+// app.use('/uno', (req, res) => divideCards(req, res, {
+//     count: 3,
+//     roomCode: '',
+//     users: ['nga', 'hong', 'danh']
+// }))
+// app.use('/suitCards', (req, res) => testSuitCards(req, res))
+// app.use('/turn', (req, res) => getTurn(req, res, ['nga', 'hong', 'nobi', 'danh'], 2, '-1'))
+// app.use('/playAgain/:username', (req, res) => {
+//     const username = req.params.username
+//     const testRoom = {
+//         roomCode: 12,
+//         host: 'nga',
+//         users: ['nga', 'hong', 'nobi'],
+//         again: ['nga', 'hong', 'nobi']
+//     }
+//     testRoom.again.push(username)
+//     if (testRoom.again.length > testRoom.users.length) {
+//         playAgainObj[testRoom.roomCode] = {}
+//         // Đếm số lần xuất hiện của mỗi phần tử
+//         testRoom.again.forEach(function (element) {
+//             playAgainObj[testRoom.roomCode][element] = (playAgainObj[testRoom.roomCode][element] || 0) + 1;
+//         });
 
-        // Tạo mảng mới từ các phần tử xuất hiện nhiều hơn 1 lần
-        var newPlayAgainArr = Object.keys(playAgainObj[testRoom.roomCode]).filter(function (element) {
-            return playAgainObj[testRoom.roomCode][element] > 1;
-        });
-        testPlayAgain(req, res, username, testRoom.roomCode, testRoom, newPlayAgainArr)
-    } else {
-        testPlayAgain(req, res, username, testRoom.roomCode, testRoom, testRoom.again)
-    }
-})
+//         // Tạo mảng mới từ các phần tử xuất hiện nhiều hơn 1 lần
+//         var newPlayAgainArr = Object.keys(playAgainObj[testRoom.roomCode]).filter(function (element) {
+//             return playAgainObj[testRoom.roomCode][element] > 1;
+//         });
+//         testPlayAgain(req, res, username, testRoom.roomCode, testRoom, newPlayAgainArr)
+//     } else {
+//         testPlayAgain(req, res, username, testRoom.roomCode, testRoom, testRoom.again)
+//     }
+// })
 server.listen(8000, () => {
     console.log('Server is listening on port 8000');
 });
