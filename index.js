@@ -17,7 +17,7 @@ const { divideCards, pickSuitCards } = require('./services/cards');
 const { playCard, drawCard } = require('./services/rules');
 const { playAgain } = require('./services/playAgain');
 const corsOptions = {
-    origin: "http://localhost:3000",
+    origin: "https://uno-game-jlpw.onrender.com",
     methods: ["GET", "POST"]
 };
 
