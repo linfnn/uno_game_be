@@ -7,7 +7,7 @@ const server = http.createServer(app);
 // const io = new Server(server);
 const io = require('socket.io')(server, {
     cors: {
-        origin: "https://uno-game-jlpw.onrender.com",
+        origin: "http://localhost:3000",
         methods: ["GET", "POST"]
     }
 });
@@ -18,7 +18,7 @@ const { divideCards, pickSuitCards } = require('./services/cards');
 const { playCard, drawCard, playResult } = require('./services/rules');
 const { playAgain } = require('./services/playAgain');
 const corsOptions = {
-    origin: "https://uno-game-jlpw.onrender.com",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"]
 };
 
@@ -202,10 +202,33 @@ io.on('connection', (socket) => {
 
 
     })
-    socket.on("disconnect", (roomCode) => {
-        rooms[roomCode] = {};
-        cards[roomCode] = {}
-        console.log('Client disconnected')
+    socket.on("disconnect", () => {
+        const newArr = []
+        for (var key in rooms) {
+            rooms[key].roomCode = key
+            newArr.push(rooms[key])
+        }
+        console.log('newArr: ', newArr)
+        const room = newArr.find(room => room.userId.includes(socket.id))
+        const roomCode = room?.roomCode
+        const index = room.userId.indexOf(socket.id)
+        console.log('index: ', index)
+        const userOfIndex = room?.users[index]
+        if (room) {
+            if (room.users.length === room.userId.length) {
+                rooms[roomCode].userId.splice(index, 1)
+                rooms[roomCode].users.splice(index, 1)
+                if (room.users.length === 0) {
+                    delete rooms[roomCode]
+                }
+                if (room.host === userOfIndex && room.users.length !== 0) {
+                    rooms[roomCode].host = rooms[roomCode].users[0]
+                }
+            }
+        }
+        console.log('newRoom: ', rooms)
+        io.to(roomCode).emit('leaved', { username: userOfIndex, roomCode, rooms: rooms[roomCode] })
+        console.log('Client disconnected', socket.id)
     })
 })
 
