@@ -7,7 +7,7 @@ const server = http.createServer(app);
 // const io = new Server(server);
 const io = require('socket.io')(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "https://uno-game-jlpw.onrender.com",
         methods: ["GET", "POST"]
     }
 });
@@ -18,7 +18,7 @@ const { divideCards, pickSuitCards } = require('./services/cards');
 const { playCard, drawCard, playResult } = require('./services/rules');
 const { playAgain } = require('./services/playAgain');
 const corsOptions = {
-    origin: "http://localhost:3000",
+    origin: "https://uno-game-jlpw.onrender.com",
     methods: ["GET", "POST"]
 };
 
