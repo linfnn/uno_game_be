@@ -54,25 +54,46 @@ io.on('connection', (socket) => {
 
     });
     // Handle leave room request
-    socket.on('leave', ({ username, roomCode, leaveFrom }) => {
+    socket.on('leave', ({ username, roomCode, leaveFrom, users, pileCard, index }) => {
         console.log('received request')
-        if (username === rooms[roomCode].host) {
+        console.log({ username, roomCode, leaveFrom })
+        if (rooms[roomCode]?.users?.length === 0) {
+            delete rooms[roomCode]
+        }
+        if (username === rooms[roomCode]?.host) {
             rooms[roomCode].users.shift()
             rooms[roomCode].users = rooms[roomCode].users
             rooms[roomCode].host = rooms[roomCode].users[0] === undefined ? '' : rooms[roomCode].users[0]
             console.log('host leaved')
-        } else if (username !== rooms[roomCode].host) {
+        } else if (username !== rooms[roomCode]?.host) {
             console.log('user leaved')
-            const userIndex = rooms[roomCode].users.indexOf(username)
+            const userIndex = rooms[roomCode]?.users?.indexOf(username)
             console.log(userIndex)
-            rooms[roomCode].users.splice(userIndex, 1)
-            rooms[roomCode].users = rooms[roomCode].users
-            rooms[roomCode].host = rooms[roomCode].host
-            console.log(rooms[roomCode].users)
+            if (userIndex !== -1) {
+                rooms[roomCode]?.users.splice(userIndex, 1)
+                // rooms[roomCode]?.users = rooms[roomCode].users
+                // rooms[roomCode]?.host = rooms[roomCode].host
+            }
         }
-        if (rooms[roomCode].users.length === 0) {
-            delete rooms[roomCode]
-        }
+        // if (leaveFrom === 'playingRoom' && users !== undefined && rooms[roomCode]?.users?.length > 1) {
+        //     const passed = playResult(users, index, cards[roomCode], pileCard)
+        //     io.to(roomCode).emit('passed', 'user successfully passed')
+        //     io.to(roomCode).emit('nextTurn', {
+        //         nextUser: {
+        //             username: passed.nextUser,
+        //             index: rooms[roomCode].users.indexOf(passed.nextUser)
+        //         },
+        //         suitCards: passed.suitCards,
+        //         pileCard: passed.pileCard,
+        //         draw: passed.draw?.length,
+        //         residualCards: cards[roomCode].residualCards,
+        //         wildColor: cards[roomCode].variable.color,
+        //         prevUser: {
+        //             username: rooms[roomCode].users[index],
+        //             cards: cards[roomCode].userCards[rooms[roomCode].users[index]]
+        //         }
+        //     })
+        // }
         socket.leave(roomCode);
         socket.emit('leaveStatus', 'leaved successfully')
         io.to(roomCode).emit('leaved', { username, roomCode, rooms: rooms[roomCode], leaveFrom: leaveFrom });
@@ -203,31 +224,30 @@ io.on('connection', (socket) => {
 
     })
     socket.on("disconnect", () => {
-        const newArr = []
-        for (var key in rooms) {
-            rooms[key].roomCode = key
-            newArr.push(rooms[key])
-        }
-        console.log('newArr: ', newArr)
-        const room = newArr.find(room => room.userId.includes(socket.id))
-        const roomCode = room?.roomCode
-        const index = room.userId.indexOf(socket.id)
-        console.log('index: ', index)
-        const userOfIndex = room?.users[index]
-        if (room) {
-            if (room.users.length === room.userId.length) {
-                rooms[roomCode].userId.splice(index, 1)
-                rooms[roomCode].users.splice(index, 1)
-                if (room.users.length === 0) {
-                    delete rooms[roomCode]
-                }
-                if (room.host === userOfIndex && room.users.length !== 0) {
-                    rooms[roomCode].host = rooms[roomCode].users[0]
-                }
-            }
-        }
-        console.log('newRoom: ', rooms)
-        io.to(roomCode).emit('leaved', { username: userOfIndex, roomCode, rooms: rooms[roomCode] })
+        // const newArr = []
+        // for (var key in rooms) {
+        //     rooms[key].roomCode = key
+        //     newArr.push(rooms[key])
+        // }
+        // const room = newArr.find(room => room?.userId?.includes(socket.id))
+        // if (room) {
+        //     const roomCode = room.roomCode
+        //     const index = room.userId.indexOf(socket.id)
+        //     console.log('index: ', index)
+        //     const userOfIndex = room?.users[index]
+        //     if (room.users.length === room.userId.length) {
+        //         rooms[roomCode].userId.splice(index, 1)
+        //         rooms[roomCode].users.splice(index, 1)
+        //         if (room.users.length === 0) {
+        //             delete rooms[roomCode]
+        //         }
+        //         if (room.host === userOfIndex && room.users.length !== 0) {
+        //             rooms[roomCode].host = rooms[roomCode].users[0]
+        //         }
+        //     }
+        //     io.to(roomCode).emit('left', { username: userOfIndex, roomCode, rooms: rooms[roomCode] })
+        // }
+        // console.log('newRoom: ', rooms)
         console.log('Client disconnected', socket.id)
     })
 })
