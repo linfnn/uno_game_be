@@ -11,6 +11,7 @@ const io = require('socket.io')(server, {
         methods: ["GET", "POST"]
     }
 });
+// http://localhost:3000
 // https://uno-game-jlpw.onrender.com
 const cors = require('cors');
 const { divideCards, pickSuitCards } = require('./services/cards');
@@ -138,6 +139,8 @@ io.on('connection', (socket) => {
                 pileCard: data.pileCard,
                 winner: rooms[data.roomCode].users[data.index]
             })
+            delete rooms[data.roomCode]
+            delete cards[data.roomCode]
         } else {
             io.to(data.roomCode).emit('played', 'valid card')
             io.to(data.roomCode).emit('nextTurn', {
